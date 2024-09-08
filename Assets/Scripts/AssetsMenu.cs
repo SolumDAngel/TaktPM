@@ -17,6 +17,7 @@ public class AssetsMenu : MonoBehaviour
     public GameObject assetCreateOverMenu, createButton, editButton;
     public GameObject selectedContainer;
 
+    public TMP_InputField searchInputField;
     public TMP_InputField nameInputField;
     public TMP_InputField descriptionInputField;
 
@@ -33,6 +34,36 @@ public class AssetsMenu : MonoBehaviour
             asset.UpdateContainer();
         }
     }
+
+    public void SearchAsset(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            // Se o nome de busca está vazio ou apenas contém espaços, ativa todos os assets
+            foreach (AssetContainer asset in assetContainerParent.GetComponentsInChildren<AssetContainer>(true))
+            {
+                asset.gameObject.SetActive(true);
+            }
+            return;
+        }
+
+        // Converte o nome para minúsculas para uma comparação case insensitive
+        string searchText = name.ToLower();
+
+        // Obtém todos os componentes AssetContainer filhos do pai
+        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>(true);
+        
+
+        // Ativa apenas os assets que correspondem à busca e desativa os demais
+        foreach (AssetContainer asset in assets)
+        {
+            asset.gameObject.SetActive(asset.assetName.ToLower().Contains(name.ToLower())); 
+        }
+        
+    }
+
+
+
 
     public string GetFreeID()
     {
