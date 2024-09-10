@@ -1,0 +1,14 @@
+{
+    "assets": [
+        {
+            "id": "1",
+            "name": "test",
+            "description": "123"
+        },
+        {
+            "id": "2",
+            "name": "123",
+            "description": "test"
+        }
+    ]
+}

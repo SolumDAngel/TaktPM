@@ -31,7 +31,10 @@ MonoBehaviour:
     Selected: 0
   - Name: Page 3
     NodeId: 65:16
-    Selected: 1
+    Selected: 0
   - Name: Page 4
     NodeId: 87:11
     Selected: 0
+  - Name: Page 5
+    NodeId: 97:16
+    Selected: 1

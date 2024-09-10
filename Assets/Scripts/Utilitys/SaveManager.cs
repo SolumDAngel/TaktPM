@@ -9,6 +9,7 @@ using UnityEngine;
 [System.Serializable]
 public class UserData
 {
+    public string id;
     public string userName;
 }
 [System.Serializable]
@@ -63,7 +64,7 @@ public static class SaveManager
 
 
     // Método para salvar um novo usuário na lista e gravar no arquivo JSON
-    public static bool SaveUser(string userName)
+    public static bool SaveUser(string id, string userName)
     {
         if (userName == "")
             return false;
@@ -72,6 +73,7 @@ public static class SaveManager
         {
             UserData newUser = new UserData();
             newUser.userName = userName;
+            newUser.id = id;
 
             // Adiciona o novo usuário à lista
             userList.users.Add(newUser);
@@ -167,7 +169,23 @@ public static class SaveManager
         }
     }
 
+    public static void RemoveUser(string idPerson)
+    {       
+        UserData assetToRemove = userList.users.Find(users => users.id == idPerson);
 
+        if (assetToRemove == null)
+        {
+            Debug.LogWarning("Nenhum Person encontrado para remover com ID: " + idPerson);
+            return;
+        }
+       
+        userList.users.Remove(assetToRemove);
+
+        // Salva a lista atualizada no arquivo
+        string json = JsonUtility.ToJson(userList, true);
+        File.WriteAllText(saveUsersFilePath, json);
+        Debug.Log("UserData removido em: " + saveUsersFilePath);
+    }
 
 
     public static void RemoveAsset(string idAsset)
