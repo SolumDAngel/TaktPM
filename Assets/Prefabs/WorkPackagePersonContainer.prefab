@@ -699,8 +699,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8400589518875329282}
   - component: {fileID: 2107451031314339495}
+  - component: {fileID: 167339664302750865}
   m_Layer: 0
-  m_Name: PersonWorkPackageContainer
+  m_Name: WorkPackagePersonContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -749,3 +750,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &167339664302750865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9215575666437692930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e74eba4b626da2a458bf5cb19ccd3050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 
+  personName: 
+  personNameText: {fileID: 2525923457999001745}
+  selected: 0
+  userData:
+    id: 
+    userName: 

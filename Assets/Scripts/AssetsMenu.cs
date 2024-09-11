@@ -23,7 +23,7 @@ public class AssetsMenu : MonoBehaviour
 
     private void Start()
     {
-       foreach(AssetsData assetData in SaveManager.appAssetsData.assets)
+        foreach (AssetsData assetData in SaveManager.appAssetsList.assets)
         {
             GameObject obj = Instantiate(assetContainer, assetContainerParent);
             AssetContainer asset = obj.GetComponent<AssetContainer>();
@@ -62,15 +62,12 @@ public class AssetsMenu : MonoBehaviour
         
     }
 
-
-
-
     public string GetFreeID()
     {
         HashSet<int> usedIDs = new HashSet<int>();
 
         // Adiciona todos os IDs já usados à lista de IDs usados
-        foreach (AssetsData asset in SaveManager.appAssetsData.assets)
+        foreach (AssetsData asset in SaveManager.appAssetsList.assets)
         {
             if (int.TryParse(asset.id, out int id))
             {
@@ -89,7 +86,6 @@ public class AssetsMenu : MonoBehaviour
         int newID = maxID + 1;
         return newID.ToString();
     }
-
 
 
     public void CreateAssetBtn()

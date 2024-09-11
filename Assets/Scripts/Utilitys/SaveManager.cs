@@ -18,28 +18,47 @@ public class UserList
     public List<UserData> users = new List<UserData>();
 }
 [System.Serializable]
-public class AssetsList
-{
-    public List<AssetsData> assets = new List<AssetsData>();
-}
-
-[System.Serializable]
 public class AssetsData
 {
     public string id;
     public string name;
     public string description;
 }
+[System.Serializable]
+public class AssetsList
+{
+    public List<AssetsData> assets = new List<AssetsData>();
+}
 
+[System.Serializable]
+public class WorkPackageData
+{
+    public string id;
+    public string workPackageName;
+    public List<AssetsData> assetsEntry = new List<AssetsData>();
+    public List<int> assetsEntryQuantity = new List<int>();
+    public List<AssetsData> assetsExit = new List<AssetsData>();
+    public List<int> assetsExitQuantity = new List<int>();
+    public List<UserData> persons = new List<UserData>();
 
+    // public List<QueuesData> queuesDatasEntry = new List<QueuesData>();
+    // public List<QueuesData> queuesDatasExist = new List<QueuesData>();
+}
+[System.Serializable]
+public class WorkPackageList
+{
+    public List<WorkPackageData> workPackages = new List<WorkPackageData>();
+}
 
 
 public static class SaveManager
 {
     private static string saveUsersFilePath = Path.Combine(Application.dataPath, "userdata.json");
     private static string saveAssetsFilePath = Path.Combine(Application.dataPath, "assetsData.json");
+    private static string saveWorkPackagesFilePath = Path.Combine(Application.dataPath, "workPackagesData.json");
     public static UserList userList;
-    public static AssetsList appAssetsData;
+    public static AssetsList appAssetsList;
+    public static WorkPackageList workPackageList;
 
     static SaveManager()
     {
@@ -51,10 +70,16 @@ public static class SaveManager
             userList = new UserList(); // Inicializa uma nova lista se nenhuma existir
         }
 
-        appAssetsData = LoadAssetsFromJson();
-        if (appAssetsData == null)
+        appAssetsList = LoadAssetsFromJson();
+        if (appAssetsList == null)
         {
-            appAssetsData = new AssetsList();
+            appAssetsList = new AssetsList();
+        }
+
+        workPackageList = LoadWorkPackageFromJson();
+        if(workPackageList == null)
+        {
+            workPackageList = new WorkPackageList();
         }
 
     }
@@ -102,16 +127,16 @@ public static class SaveManager
             return false;
         }
 
-        if (appAssetsData.assets.Exists(u => u.id == idAsset))
+        if (appAssetsList.assets.Exists(u => u.id == idAsset))
         {
             Debug.LogWarning("AssetData já existe modificando: " + idAsset + " : " + nameAsset + " : " + descriptionAsset);
 
-            int editAssetData = appAssetsData.assets.FindIndex(assets => assets.id == idAsset);
-            appAssetsData.assets[editAssetData].id = idAsset;
-            appAssetsData.assets[editAssetData].name = nameAsset;
-            appAssetsData.assets[editAssetData].description = descriptionAsset;           
+            int editAssetData = appAssetsList.assets.FindIndex(assets => assets.id == idAsset);
+            appAssetsList.assets[editAssetData].id = idAsset;
+            appAssetsList.assets[editAssetData].name = nameAsset;
+            appAssetsList.assets[editAssetData].description = descriptionAsset;           
 
-            string json = JsonUtility.ToJson(appAssetsData, true);
+            string json = JsonUtility.ToJson(appAssetsList, true);
             File.WriteAllText(saveAssetsFilePath, json);
             Debug.Log("AssetData salvo em: " + saveAssetsFilePath);
         }
@@ -124,20 +149,61 @@ public static class SaveManager
             newAssetData.name = nameAsset;
             newAssetData.description = descriptionAsset;
 
-            appAssetsData.assets.Add(newAssetData);
+            appAssetsList.assets.Add(newAssetData);
 
-            string json = JsonUtility.ToJson(appAssetsData, true);
+            string json = JsonUtility.ToJson(appAssetsList, true);
             File.WriteAllText(saveAssetsFilePath, json);
             Debug.Log("AssetData salvo em: " + saveAssetsFilePath);
-        }
-
-
-  
+        } 
 
         return true;
     }
 
+    public static bool SaveWorkPackageData(WorkPackageData workPackageData)
+    {
+        if (workPackageData.id == "")
+        {
+            Debug.LogWarning("No workPackage ID");
+            return false;
+        }
 
+        if (workPackageList.workPackages.Exists(u => u.id == workPackageData.id))
+        {
+            Debug.LogWarning("workPackage já existe modificando: " + workPackageData.id + " : " + workPackageData.workPackageName);
+
+            int editWorkPackageData = workPackageList.workPackages.FindIndex(workPackage => workPackage.id == workPackageData.id);
+            workPackageList.workPackages[editWorkPackageData].id = workPackageData.id;
+            workPackageList.workPackages[editWorkPackageData].workPackageName = workPackageData.workPackageName;
+            workPackageList.workPackages[editWorkPackageData].assetsEntry = workPackageData.assetsEntry;
+            workPackageList.workPackages[editWorkPackageData].assetsExit = workPackageData.assetsExit;
+            workPackageList.workPackages[editWorkPackageData].persons = workPackageData.persons;
+
+
+            string json = JsonUtility.ToJson(workPackageList, true);
+            File.WriteAllText(saveWorkPackagesFilePath, json);
+            Debug.Log("WorkPackageData salvo em: " + saveWorkPackagesFilePath);
+        }
+        else
+        {
+            Debug.LogWarning("WorkPackageData ainda não existe: ");
+
+            WorkPackageData newWorkPackageData = new WorkPackageData();
+            newWorkPackageData.id = workPackageData.id;
+            newWorkPackageData.workPackageName = workPackageData.workPackageName;
+            newWorkPackageData.assetsEntry = workPackageData.assetsEntry;
+            newWorkPackageData.assetsExit = workPackageData.assetsExit;
+            newWorkPackageData.persons = workPackageData.persons;
+
+
+            workPackageList.workPackages.Add(newWorkPackageData);
+
+            string json = JsonUtility.ToJson(workPackageList, true);
+            File.WriteAllText(saveWorkPackagesFilePath, json);
+            Debug.Log("AssetData salvo em: " + saveWorkPackagesFilePath);
+        }
+
+        return true;
+    }
 
 
 
@@ -169,6 +235,20 @@ public static class SaveManager
         }
     }
 
+    public static WorkPackageList LoadWorkPackageFromJson()
+    {
+        if (File.Exists(saveWorkPackagesFilePath))
+        {
+            string json = File.ReadAllText(saveWorkPackagesFilePath);
+            return JsonUtility.FromJson<WorkPackageList>(json);
+        }
+        else
+        {
+            Debug.LogWarning("Arquivo de dados de WorkPackage não encontrado");
+            return null;
+        }
+    }
+
     public static void RemoveUser(string idPerson)
     {       
         UserData assetToRemove = userList.users.Find(users => users.id == idPerson);
@@ -191,7 +271,7 @@ public static class SaveManager
     public static void RemoveAsset(string idAsset)
     {
         // Verifica se existe um asset com o ID especificado
-        AssetsData assetToRemove = appAssetsData.assets.Find(asset => asset.id == idAsset);
+        AssetsData assetToRemove = appAssetsList.assets.Find(asset => asset.id == idAsset);
 
         if (assetToRemove == null)
         {
@@ -200,10 +280,10 @@ public static class SaveManager
         }
 
         // Remove o asset da lista
-        appAssetsData.assets.Remove(assetToRemove);
+        appAssetsList.assets.Remove(assetToRemove);
 
         // Salva a lista atualizada no arquivo
-        string json = JsonUtility.ToJson(appAssetsData, true);
+        string json = JsonUtility.ToJson(appAssetsList, true);
         File.WriteAllText(saveAssetsFilePath, json);
         Debug.Log("AssetData removido e salvo em: " + saveAssetsFilePath);
     }

@@ -1,0 +1,31 @@
+{
+    "workPackages": [
+        {
+            "id": "1",
+            "workPackageName": "abc",
+            "assetsEntry": [],
+            "assetsEntryQuantity": [],
+            "assetsExit": [],
+            "assetsExitQuantity": [],
+            "persons": []
+        },
+        {
+            "id": "2",
+            "workPackageName": "hjhj",
+            "assetsEntry": [],
+            "assetsEntryQuantity": [],
+            "assetsExit": [],
+            "assetsExitQuantity": [],
+            "persons": []
+        },
+        {
+            "id": "3",
+            "workPackageName": "abc",
+            "assetsEntry": [],
+            "assetsEntryQuantity": [],
+            "assetsExit": [],
+            "assetsExitQuantity": [],
+            "persons": []
+        }
+    ]
+}

@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class WorkPackageContainer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string id;
+    public string workPackageName;
+    public TextMeshProUGUI workPackageNameText;
+    public bool selected;
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateContainer()
     {
-        
+        workPackageNameText.text = workPackageName;
+    }
+    public void Select(bool select)
+    {
+        selected = select;
     }
 }

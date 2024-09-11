@@ -1,18 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class WorkPackageContainerPersons : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public string id;
+    public string personName;
+    
+    public TextMeshProUGUI personNameText; 
+    public bool selected;
+    public UserData userData;
+
+
+    public void UpdateContainer()
     {
-        
+        personNameText.text = personName;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Select(bool select)
     {
-        
-    }
+        selected = select;
+    }    
 }
