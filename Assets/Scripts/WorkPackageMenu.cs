@@ -16,7 +16,7 @@ public class WorkPackageMenu : MonoBehaviour
     public Transform workPackageContainerPersonsTransform;
 
     public GameObject worPackageCreateOverMenu, createButton, editButton;
-    public GameObject selectedContainer;
+    public WorkPackageContainer selectedContainer;
 
     public TMP_InputField workPackageNameInputField;
     public TMP_InputField searchWorkPackageInputField;
@@ -27,8 +27,18 @@ public class WorkPackageMenu : MonoBehaviour
 
     public void Start()
     {
-        //if (SaveManager.workPackageList != null)
-            LoadContainers();
+        foreach (WorkPackageData workPackageData in SaveManager.workPackageList.workPackages)
+        {
+            GameObject obj = Instantiate(workPackageContainer, workPackageContainerTransform);
+            WorkPackageContainer workPackage = obj.GetComponent<WorkPackageContainer>();
+
+            workPackage.id = workPackageData.id;
+            workPackage.workPackageName = workPackageData.workPackageName;
+            workPackage.UpdateContainer();
+        }
+
+
+        LoadContainers();
     }
 
     public void LoadContainers()
@@ -54,6 +64,7 @@ public class WorkPackageMenu : MonoBehaviour
                 WorkPackageContainerAssets asset = instantiatedEntryAssets[assetEntry.id];
                 asset.assetName = assetEntry.name;
                 asset.selected = isSelected;
+                asset.assetData = assetEntry;
                 asset.UpdateContainer();
             }
             else
@@ -65,6 +76,7 @@ public class WorkPackageMenu : MonoBehaviour
                 asset.id = assetEntry.id;
                 asset.assetName = assetEntry.name;
                 asset.selected = isSelected;
+                asset.assetData = assetEntry;
                 asset.UpdateContainer();
 
                 // Adiciona ao dicionário
@@ -79,7 +91,7 @@ public class WorkPackageMenu : MonoBehaviour
             if (SaveManager.workPackageList != null)
                 foreach (WorkPackageData workPackage in SaveManager.workPackageList.workPackages)
                 {
-                    isSelected = workPackage.assetsEntry.Any(a => a.id == assetExit.id);
+                    isSelected = workPackage.assetsExit.Any(a => a.id == assetExit.id);
                 }
             if (instantiatedExitAssets.ContainsKey(assetExit.id))
             {
@@ -87,6 +99,7 @@ public class WorkPackageMenu : MonoBehaviour
                 WorkPackageContainerAssets asset = instantiatedExitAssets[assetExit.id];
                 asset.assetName = assetExit.name;
                 asset.selected = isSelected;
+                asset.assetData = assetExit;
                 asset.UpdateContainer();
             }
             else
@@ -97,6 +110,7 @@ public class WorkPackageMenu : MonoBehaviour
                 asset.id = assetExit.id;
                 asset.assetName = assetExit.name;
                 asset.selected = isSelected;
+                asset.assetData = assetExit;
                 asset.UpdateContainer();
 
                 // Adiciona ao dicionário
@@ -111,7 +125,7 @@ public class WorkPackageMenu : MonoBehaviour
             if (SaveManager.workPackageList != null)
                 foreach (WorkPackageData workPackage in SaveManager.workPackageList.workPackages)
                 {
-                    isSelected = workPackage.assetsEntry.Any(a => a.id == person.id);
+                    isSelected = workPackage.persons.Exists(a => a.id == person.id);
                 }
             if (instantiatedPersons.ContainsKey(person.id))
             {
@@ -119,6 +133,7 @@ public class WorkPackageMenu : MonoBehaviour
                 WorkPackageContainerPersons personContainer = instantiatedPersons[person.id];
                 personContainer.personName = person.userName;
                 personContainer.selected = isSelected;
+                personContainer.userData = person;
                 personContainer.UpdateContainer();
             }
             else
@@ -129,6 +144,7 @@ public class WorkPackageMenu : MonoBehaviour
                 personContainer.id = person.id;
                 personContainer.personName = person.userName;
                 personContainer.selected = isSelected;
+                personContainer.userData = person;
                 personContainer.UpdateContainer();
 
                 // Adiciona ao dicionário
@@ -147,7 +163,7 @@ public class WorkPackageMenu : MonoBehaviour
 
         workPackage.id = GetFreeID();
         workPackage.workPackageName = workPackageNameInputField.text;
-
+        workPackage.UpdateContainer();
 
         WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
         List<AssetsData> assetsEntryList = new List<AssetsData>();
@@ -161,10 +177,10 @@ public class WorkPackageMenu : MonoBehaviour
             }
         }
 
-        WorkPackageContainerAssets[] assetsExist = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
         List<AssetsData> assetsExitList = new List<AssetsData>();
         List<int> assetsExitQuantity = new List<int>();
-        foreach (WorkPackageContainerAssets asset in assetsEntry)
+        foreach (WorkPackageContainerAssets asset in assetsExit)
         {
             if (asset.selected)
             {
@@ -194,8 +210,175 @@ public class WorkPackageMenu : MonoBehaviour
             persons = personsList
         };
         SaveToJson(workPackageData);
+        worPackageCreateOverMenu.SetActive(false);
     }
 
+
+
+
+    public void EditBtn()
+    {
+        WorkPackageContainer workPackage = selectedContainer;
+        WorkPackageData workPackageData = SaveManager.workPackageList.workPackages.Find(x => x.id == workPackage.id);
+
+        workPackage.id = selectedContainer.id;
+        workPackage.workPackageName = workPackageNameInputField.text;
+        workPackage.UpdateContainer();
+
+        WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        List<AssetsData> assetsEntryList = new List<AssetsData>();
+        List<int> assetsEntryQuantity = new List<int>();
+        foreach (WorkPackageContainerAssets asset in assetsEntry)
+        {
+            if (asset.selected)
+            {
+                if (workPackageData.assetsEntry.Exists(x => x.id == asset.assetData.id))
+                {
+                    int editWorkPackageAssetEntryData = workPackageData.assetsEntry.FindIndex(assets => assets.id == asset.assetData.id);
+                    workPackageData.assetsEntry[editWorkPackageAssetEntryData] = asset.assetData;
+                    workPackageData.assetsEntryQuantity[editWorkPackageAssetEntryData] = asset.quantity;
+                }
+                assetsEntryList.Add(asset.assetData);
+                assetsEntryQuantity.Add(asset.quantity);
+            }
+        }
+
+        WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        List<AssetsData> assetsExitList = new List<AssetsData>();
+        List<int> assetsExitQuantity = new List<int>();
+        foreach (WorkPackageContainerAssets asset in assetsExit)
+        {
+            if (asset.selected)
+            {
+                if (workPackageData.assetsExit.Exists(x => x.id == asset.assetData.id))
+                {
+                    int editWorkPackageAssetExitData = workPackageData.assetsExit.FindIndex(assets => assets.id == asset.assetData.id);
+                    workPackageData.assetsExit[editWorkPackageAssetExitData] = asset.assetData;
+                    workPackageData.assetsExitQuantity[editWorkPackageAssetExitData] = asset.quantity;
+                }
+                assetsExitList.Add(asset.assetData);
+                assetsExitQuantity.Add(asset.quantity);
+            }
+        }
+
+        WorkPackageContainerPersons[] persons = workPackageContainerPersonsTransform.GetComponentsInChildren<WorkPackageContainerPersons>();
+        List<UserData> personsList = new List<UserData>();
+        foreach (WorkPackageContainerPersons person in persons)
+        {
+            if (person.selected)
+            {
+                if (workPackageData.persons.Exists(x => x.id == person.id))
+                {
+                    int editWorkPackagePersonData = workPackageData.persons.FindIndex(persons => persons.id == person.id);
+                    workPackageData.persons[editWorkPackagePersonData] = person.userData;
+                }
+                personsList.Add(person.userData);
+            }
+        }
+
+        workPackageData.id = workPackage.id;
+        workPackageData.workPackageName = workPackage.workPackageName;
+        workPackageData.assetsEntry = assetsEntryList;
+        workPackageData.assetsEntryQuantity = assetsEntryQuantity;
+        workPackageData.assetsExit = assetsExitList;
+        workPackageData.assetsExitQuantity = assetsExitQuantity;
+        workPackageData.persons = personsList;
+
+        SaveToJson(workPackageData);
+        worPackageCreateOverMenu.SetActive(false);
+    }
+
+
+    public void EditContainerBtn()
+    {
+        selectedContainer = null;
+        WorkPackageContainer[] workPackage = workPackageContainerTransform.GetComponentsInChildren<WorkPackageContainer>();
+        foreach (WorkPackageContainer workpackageData in workPackage)
+        {
+
+            if (workpackageData.selected)
+            {
+                selectedContainer = workpackageData;
+                break;
+            }
+        }
+        if (selectedContainer == null)
+        {
+            Debug.Log("No asset container selected");
+            return;
+        }
+        worPackageCreateOverMenu.SetActive(true);
+        createButton.SetActive(false);
+        editButton.SetActive(true);
+
+
+         Debug.Log("Selected Container ID: " + selectedContainer.id);
+
+        //int editWorkPackageData = SaveManager.workPackageList.workPackages.FindIndex(workPackage => workPackage.id == selectedContainer.id);
+
+        int editWorkPackageData = 0;
+        for (int i = 0; i < SaveManager.workPackageList.workPackages.Count; i++)
+        {
+            if (SaveManager.workPackageList.workPackages[i].id == selectedContainer.id)
+            {
+                editWorkPackageData = i;
+            }
+        }
+
+        Debug.Log("Found Index: " + editWorkPackageData);
+
+        WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        if (SaveManager.workPackageList.workPackages.Exists(u => u.id == selectedContainer.id))
+        {
+            foreach (WorkPackageContainerAssets assetEntryData in assetsEntry)
+            {
+                assetEntryData.quantity = 0;
+                assetEntryData.quantityInputField.text = "0";
+                foreach (AssetsData assetsData in SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntry)
+                    if (assetEntryData.assetData.id == assetsData.id)
+                    {
+                        assetEntryData.selected = true;
+                        assetEntryData.quantity =
+                            SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntryQuantity
+                            [SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntry.IndexOf(assetsData)];
+                        assetEntryData.quantityInputField.text = assetEntryData.quantity.ToString();
+                        assetEntryData.UpdateContainer();
+                    }
+            }
+        }
+
+        WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        if (SaveManager.workPackageList.workPackages.Exists(u => u.id == selectedContainer.id))
+        {
+            foreach (WorkPackageContainerAssets assetExitData in assetsExit)
+            {
+                assetExitData.quantity = 0;
+                assetExitData.quantityInputField.text = "0";
+                foreach (AssetsData assetsData in SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExit)
+                    if (assetExitData.assetData.id == assetsData.id)
+                    {
+                        assetExitData.selected = true;
+                        assetExitData.quantity =
+                            SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExitQuantity
+                            [SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExit.IndexOf(assetsData)];
+                        assetExitData.quantityInputField.text = assetExitData.quantity.ToString();
+                        assetExitData.UpdateContainer();
+                    }
+            }
+        }
+
+        WorkPackageContainerPersons[] persons = workPackageContainerPersonsTransform.GetComponentsInChildren<WorkPackageContainerPersons>();
+        if (SaveManager.workPackageList.workPackages.Exists(u => u.id == selectedContainer.id))
+        {
+            foreach (WorkPackageContainerPersons personData in persons)
+                foreach (UserData userData in SaveManager.workPackageList.workPackages[editWorkPackageData].persons)
+                    if (personData.userData.id == userData.id)
+                    {
+                        personData.selected = true;
+                        personData.UpdateContainer();
+                    }
+        }
+    }
 
     public void SaveToJson(WorkPackageData workPackageData)
     {
@@ -218,7 +401,7 @@ public class WorkPackageMenu : MonoBehaviour
         }
         else
         {
-            usedIDs.Add(0); 
+            usedIDs.Add(0);
         }
         // Encontra o maior ID usado
         int maxID = 0;
@@ -236,11 +419,36 @@ public class WorkPackageMenu : MonoBehaviour
         worPackageCreateOverMenu.SetActive(true);
         createButton.SetActive(true);
         editButton.SetActive(false);
+        workPackageNameInputField.text = "";
+        WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        foreach (WorkPackageContainerAssets asset in assetsEntry)
+        {
+            asset.selected = false;
+            asset.quantity = 0;
+            asset.quantityInputField.text = "0";
+            asset.UpdateContainer();
+        }
+        
+        WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>();
+        foreach (WorkPackageContainerAssets asset in assetsExit)
+        {
+            asset.selected = false;
+            asset.quantity = 0;
+            asset.quantityInputField.text = "0";
+            asset.UpdateContainer();
+        }
+        WorkPackageContainerPersons[] persons = workPackageContainerPersonsTransform.GetComponentsInChildren<WorkPackageContainerPersons>();
+        foreach (WorkPackageContainerPersons person in persons)
+        {
+            person.selected = false;
+            person.UpdateContainer();
+        }   
     }
 
     public void CancelBtn()
     {
-
+        worPackageCreateOverMenu.SetActive(false);
+        workPackageNameInputField.text = "";
     }
 
 }

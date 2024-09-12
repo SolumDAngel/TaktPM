@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WorkPackageContainerAssets : MonoBehaviour
 {
@@ -15,11 +16,14 @@ public class WorkPackageContainerAssets : MonoBehaviour
     public int quantity;
 
     public AssetsData assetData;
-
+    public GameObject checkMark;
+    public Toggle toggle;
 
     public void UpdateContainer()
     {
         assetNameText.text = assetName;
+        checkMark.SetActive(selected);
+        toggle.isOn = selected;
     }
 
     public void Select(bool select)

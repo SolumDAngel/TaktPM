@@ -1,31 +1,84 @@
 {
     "workPackages": [
         {
-            "id": "1",
-            "workPackageName": "abc",
-            "assetsEntry": [],
-            "assetsEntryQuantity": [],
-            "assetsExit": [],
-            "assetsExitQuantity": [],
-            "persons": []
-        },
-        {
             "id": "2",
-            "workPackageName": "hjhj",
-            "assetsEntry": [],
-            "assetsEntryQuantity": [],
-            "assetsExit": [],
-            "assetsExitQuantity": [],
-            "persons": []
+            "workPackageName": "kk",
+            "assetsEntry": [
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsEntryQuantity": [
+                5
+            ],
+            "assetsExit": [
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsExitQuantity": [
+                6
+            ],
+            "persons": [
+                {
+                    "id": "1",
+                    "userName": "aaaaaaa"
+                },
+                {
+                    "id": "2",
+                    "userName": "fgfdgfdg"
+                },
+                {
+                    "id": "3",
+                    "userName": "ffffffffffff"
+                }
+            ]
         },
         {
             "id": "3",
-            "workPackageName": "abc",
-            "assetsEntry": [],
-            "assetsEntryQuantity": [],
-            "assetsExit": [],
-            "assetsExitQuantity": [],
-            "persons": []
+            "workPackageName": "fffffffffffdsdsdf",
+            "assetsEntry": [
+                {
+                    "id": "1",
+                    "name": "test",
+                    "description": "123"
+                },
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsEntryQuantity": [
+                2,
+                0
+            ],
+            "assetsExit": [
+                {
+                    "id": "1",
+                    "name": "test",
+                    "description": "123"
+                },
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsExitQuantity": [
+                4,
+                10
+            ],
+            "persons": [
+                {
+                    "id": "3",
+                    "userName": "ffffffffffff"
+                }
+            ]
         }
     ]
 }

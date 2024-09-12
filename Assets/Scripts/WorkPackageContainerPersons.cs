@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WorkPackageContainerPersons : MonoBehaviour
 {
@@ -11,11 +12,14 @@ public class WorkPackageContainerPersons : MonoBehaviour
     public TextMeshProUGUI personNameText; 
     public bool selected;
     public UserData userData;
-
+    public GameObject checkBox;
+    public Toggle toogle;
 
     public void UpdateContainer()
     {
         personNameText.text = personName;
+        checkBox.SetActive(selected);
+        toogle.isOn = selected;
     }
 
     public void Select(bool select)

@@ -38,7 +38,7 @@ public class WorkPackageData
     public List<AssetsData> assetsEntry = new List<AssetsData>();
     public List<int> assetsEntryQuantity = new List<int>();
     public List<AssetsData> assetsExit = new List<AssetsData>();
-    public List<int> assetsExitQuantity = new List<int>();
+    public List<int> assetsExitQuantity = new List<int>();   
     public List<UserData> persons = new List<UserData>();
 
     // public List<QueuesData> queuesDatasEntry = new List<QueuesData>();
@@ -175,7 +175,9 @@ public static class SaveManager
             workPackageList.workPackages[editWorkPackageData].id = workPackageData.id;
             workPackageList.workPackages[editWorkPackageData].workPackageName = workPackageData.workPackageName;
             workPackageList.workPackages[editWorkPackageData].assetsEntry = workPackageData.assetsEntry;
+            workPackageList.workPackages[editWorkPackageData].assetsEntryQuantity = workPackageData.assetsEntryQuantity;
             workPackageList.workPackages[editWorkPackageData].assetsExit = workPackageData.assetsExit;
+            workPackageList.workPackages[editWorkPackageData].assetsExitQuantity = workPackageData.assetsExitQuantity;
             workPackageList.workPackages[editWorkPackageData].persons = workPackageData.persons;
 
 
@@ -191,7 +193,9 @@ public static class SaveManager
             newWorkPackageData.id = workPackageData.id;
             newWorkPackageData.workPackageName = workPackageData.workPackageName;
             newWorkPackageData.assetsEntry = workPackageData.assetsEntry;
+            newWorkPackageData.assetsEntryQuantity = workPackageData.assetsEntryQuantity;
             newWorkPackageData.assetsExit = workPackageData.assetsExit;
+            newWorkPackageData.assetsExitQuantity = workPackageData.assetsExitQuantity;
             newWorkPackageData.persons = workPackageData.persons;
 
 
