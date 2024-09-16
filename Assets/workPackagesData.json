@@ -1,8 +1,8 @@
 {
     "workPackages": [
         {
-            "id": "2",
-            "workPackageName": "kk",
+            "id": "3",
+            "workPackageName": "fghfgh",
             "assetsEntry": [
                 {
                     "id": "2",
@@ -11,9 +11,14 @@
                 }
             ],
             "assetsEntryQuantity": [
-                5
+                1
             ],
             "assetsExit": [
+                {
+                    "id": "1",
+                    "name": "test",
+                    "description": "123"
+                },
                 {
                     "id": "2",
                     "name": "123",
@@ -21,13 +26,47 @@
                 }
             ],
             "assetsExitQuantity": [
-                6
+                2,
+                2
             ],
-            "persons": [
+            "persons": []
+        },
+        {
+            "id": "4",
+            "workPackageName": "sadasfa",
+            "assetsEntry": [
                 {
                     "id": "1",
-                    "userName": "aaaaaaa"
+                    "name": "test",
+                    "description": "123"
                 },
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsEntryQuantity": [
+                3,
+                1
+            ],
+            "assetsExit": [
+                {
+                    "id": "1",
+                    "name": "test",
+                    "description": "123"
+                },
+                {
+                    "id": "2",
+                    "name": "123",
+                    "description": "test"
+                }
+            ],
+            "assetsExitQuantity": [
+                2,
+                2
+            ],
+            "persons": [
                 {
                     "id": "2",
                     "userName": "fgfdgfdg"
@@ -39,30 +78,19 @@
             ]
         },
         {
-            "id": "3",
-            "workPackageName": "fffffffffffdsdsdf",
+            "id": "5",
+            "workPackageName": "hgfgttttttt",
             "assetsEntry": [
                 {
                     "id": "1",
                     "name": "test",
                     "description": "123"
-                },
-                {
-                    "id": "2",
-                    "name": "123",
-                    "description": "test"
                 }
             ],
             "assetsEntryQuantity": [
-                2,
-                0
+                4
             ],
             "assetsExit": [
-                {
-                    "id": "1",
-                    "name": "test",
-                    "description": "123"
-                },
                 {
                     "id": "2",
                     "name": "123",
@@ -70,13 +98,16 @@
                 }
             ],
             "assetsExitQuantity": [
-                4,
-                10
+                4
             ],
             "persons": [
                 {
-                    "id": "3",
-                    "userName": "ffffffffffff"
+                    "id": "1",
+                    "userName": "aaaaaaa"
+                },
+                {
+                    "id": "2",
+                    "userName": "fgfdgfdg"
                 }
             ]
         }

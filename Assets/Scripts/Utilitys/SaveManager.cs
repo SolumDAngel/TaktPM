@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 
@@ -48,6 +49,14 @@ public class WorkPackageData
 public class WorkPackageList
 {
     public List<WorkPackageData> workPackages = new List<WorkPackageData>();
+}
+[System.Serializable]
+public class QueuesData
+{
+    public string id;
+    public string queueName;
+    public List<WorkPackageData> entryWorkPackages = new List<WorkPackageData>();
+    public List<WorkPackageData> exitWorkPackages = new List<WorkPackageData>();
 }
 
 
@@ -292,7 +301,22 @@ public static class SaveManager
         Debug.Log("AssetData removido e salvo em: " + saveAssetsFilePath);
     }
 
+    public static void RemoveWorkPackageContainer(string idWorkPackageContainer)
+    {
+        WorkPackageData workPackageToRemove = workPackageList.workPackages.Find(workpackage => workpackage.id == idWorkPackageContainer);
 
+        if(workPackageToRemove == null)
+        {
+            Debug.LogWarning("Nenhum WorkPackage encontrado para remover com ID: " + idWorkPackageContainer);
+            return;
+        }
+
+        workPackageList.workPackages.Remove(workPackageToRemove);
+
+        string json = JsonUtility.ToJson(workPackageList, true);
+        File.WriteAllText (saveWorkPackagesFilePath, json);
+        Debug.Log("WorkPackage removido e salvo em: " + saveWorkPackagesFilePath);
+    }
 
 
     // Método para obter todos os nomes de usuários salvos

@@ -96,7 +96,7 @@ public class AssetsMenu : MonoBehaviour
             return;
         }
 
-        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>();
+        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>(true);
 
         foreach (AssetContainer assetsData in assets)
         {
@@ -120,6 +120,8 @@ public class AssetsMenu : MonoBehaviour
         asset.UpdateContainer();
         assetCreateOverMenu.SetActive(false);
         assets = new AssetContainer[0];
+
+        ResetSelected();
     }
     public void EditAssetBtn()
     {
@@ -130,7 +132,9 @@ public class AssetsMenu : MonoBehaviour
         asset.description = descriptionInputField.text;
         SaveToJson(asset.id);
         asset.UpdateContainer();
-        assetCreateOverMenu.SetActive(false);       
+        assetCreateOverMenu.SetActive(false);
+
+        ResetSelected();
     }
 
     public void SaveToJson(string id)
@@ -147,11 +151,13 @@ public class AssetsMenu : MonoBehaviour
 
         nameInputField.text = "";
         descriptionInputField.text = "";
+
+        ResetSelected();
     }
     public void EditContainerBtn()
     {
         selectedContainer = null;
-        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>();
+        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>(true);
         foreach (AssetContainer assetsData in assets)
         {
    
@@ -175,6 +181,8 @@ public class AssetsMenu : MonoBehaviour
         assetCreateOverMenu.SetActive(true);
         createButton.SetActive(false);
         editButton.SetActive(true);
+
+        ResetSelected();
     }
 
 
@@ -183,12 +191,14 @@ public class AssetsMenu : MonoBehaviour
         assetCreateOverMenu.SetActive(false);
         nameInputField.text = "";
         descriptionInputField.text = "";
+     
+        ResetSelected();
     }
 
     public void RemoveBtn()
     {
         selectedContainer = null;
-        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>();
+        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>(true);
         AssetContainer asset = null;
         foreach (AssetContainer assetsData in assets)
         {
@@ -207,5 +217,18 @@ public class AssetsMenu : MonoBehaviour
         SaveManager.RemoveAsset(asset.id);
         Destroy(selectedContainer);
         assets = new AssetContainer[0];
+       
+        ResetSelected();
+    }
+
+
+    public void ResetSelected()
+    {
+        selectedContainer = null;
+        AssetContainer[] assets = assetContainerParent.GetComponentsInChildren<AssetContainer>(true);
+        foreach (AssetContainer assetsData in assets)
+        {
+            assetsData.selected = false;
+        }
     }
 }

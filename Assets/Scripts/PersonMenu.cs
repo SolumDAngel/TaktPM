@@ -64,7 +64,7 @@ public class PersonMenu : MonoBehaviour
             return;
         }
 
-        PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>();
+        PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>(true);
 
         foreach (PersonContainer usersData in users)
         {
@@ -86,6 +86,8 @@ public class PersonMenu : MonoBehaviour
         user.UpdateContainer();
         personCreateOverMenu.SetActive(false);
         users = new PersonContainer[0];
+
+        ResetSelected();
     }
 
     public void SaveToJson(string id)
@@ -122,16 +124,20 @@ public class PersonMenu : MonoBehaviour
     {
         personNameInputField.text = "";
         personCreateOverMenu.SetActive(true);
+
+        ResetSelected();
     }
     public void CancelBtn()
     {
         personNameInputField.text = "";
         personCreateOverMenu.SetActive(false);
+
+        ResetSelected();
     }
     public void RemoveBtn()
     {
         selectedContainer = null;
-        PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>();
+        PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>(true);
         PersonContainer user = null;
         foreach (PersonContainer userData in users)
         {
@@ -150,5 +156,17 @@ public class PersonMenu : MonoBehaviour
         SaveManager.RemoveUser(user.id);
         Destroy(selectedContainer);
         users = new PersonContainer[0];
+      
+        ResetSelected();
+    }
+
+    public void ResetSelected()
+    {
+        selectedContainer = null;
+        PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>(true);
+        foreach (PersonContainer userData in users)
+        {
+            userData.selected = false;
+        }
     }
 }
