@@ -58,6 +58,11 @@ public class QueuesData
     public List<WorkPackageData> entryWorkPackages = new List<WorkPackageData>();
     public List<WorkPackageData> exitWorkPackages = new List<WorkPackageData>();
 }
+[System.Serializable]
+public class QueuesList
+{
+    public List<QueuesData> queues = new List<QueuesData>();
+}
 
 
 public static class SaveManager
@@ -65,9 +70,11 @@ public static class SaveManager
     private static string saveUsersFilePath = Path.Combine(Application.dataPath, "userdata.json");
     private static string saveAssetsFilePath = Path.Combine(Application.dataPath, "assetsData.json");
     private static string saveWorkPackagesFilePath = Path.Combine(Application.dataPath, "workPackagesData.json");
+    private static string saveQueuesFilePath = Path.Combine(Application.dataPath, "queuesData.json");
     public static UserList userList;
     public static AssetsList appAssetsList;
     public static WorkPackageList workPackageList;
+    public static QueuesList queueList;
 
     static SaveManager()
     {
@@ -90,6 +97,12 @@ public static class SaveManager
         {
             workPackageList = new WorkPackageList();
         }
+        queueList = LoadQueuesFromJson();
+        if(queueList == null)
+        {
+            queueList = new QueuesList();
+        }
+
 
     }
 
@@ -218,6 +231,48 @@ public static class SaveManager
         return true;
     }
 
+    public static bool SaveQueueData(QueuesData queueData)
+    {
+        if (queueData.id == "")
+        {
+            Debug.LogWarning("No queueu ID");
+            return false;
+        }
+
+        if (queueList.queues.Exists(u => u.id == queueData.id))
+        {
+            Debug.LogWarning("Queue já existe modificando: " + queueData.id + " : " + queueData.queueName);
+
+            int editQueueData = queueList.queues.FindIndex(queue => queue.id == queueData.id);
+            queueList.queues[editQueueData].id = queueData.id;
+            queueList.queues[editQueueData].queueName = queueData.queueName;
+            queueList.queues[editQueueData].entryWorkPackages = queueData.entryWorkPackages;
+            queueList.queues[editQueueData].exitWorkPackages = queueData.exitWorkPackages;
+
+
+            string json = JsonUtility.ToJson(queueList, true);
+            File.WriteAllText(saveQueuesFilePath, json);
+            Debug.Log("QueueData salvo em: " + saveQueuesFilePath);
+        }
+        else
+        {
+            Debug.LogWarning("QueueData ainda não existe: ");
+
+            QueuesData newQueueData = new QueuesData();
+            newQueueData.id = queueData.id;
+            newQueueData.queueName = queueData.queueName;
+            newQueueData.entryWorkPackages = queueData.entryWorkPackages;
+            newQueueData.exitWorkPackages = queueData.exitWorkPackages;            
+            queueList.queues.Add(newQueueData);
+
+            string json = JsonUtility.ToJson(queueList, true);
+            File.WriteAllText(saveQueuesFilePath, json);
+            Debug.Log("Salvado Queueusdata salvo em: " + saveQueuesFilePath);
+        }
+
+        return true;
+    }
+
 
 
     // Método para carregar a lista de usuários do JSON
@@ -258,6 +313,20 @@ public static class SaveManager
         else
         {
             Debug.LogWarning("Arquivo de dados de WorkPackage não encontrado");
+            return null;
+        }
+    }
+
+    public static QueuesList LoadQueuesFromJson()
+    {
+        if (File.Exists(saveQueuesFilePath))
+        {
+            string json = File.ReadAllText(saveQueuesFilePath);
+            return JsonUtility.FromJson<QueuesList>(json);
+        }
+        else
+        {
+            Debug.LogWarning("Arquivo de dados de Queue não encontrado");
             return null;
         }
     }
@@ -316,6 +385,23 @@ public static class SaveManager
         string json = JsonUtility.ToJson(workPackageList, true);
         File.WriteAllText (saveWorkPackagesFilePath, json);
         Debug.Log("WorkPackage removido e salvo em: " + saveWorkPackagesFilePath);
+    }
+
+    public static void RemoveQueueContainer(string idQueueContainer)
+    {
+        QueuesData queueToRemove = queueList.queues.Find(queue => queue.id == idQueueContainer);
+
+        if (queueToRemove == null)
+        {
+            Debug.LogWarning("Nenhum Queue encontrado para remover com ID: " + idQueueContainer);
+            return;
+        }
+
+        queueList.queues.Remove(queueToRemove);
+
+        string json = JsonUtility.ToJson(queueList, true);
+        File.WriteAllText(saveQueuesFilePath, json);
+        Debug.Log("Queue removido e salvo em: " + saveQueuesFilePath);
     }
 
 

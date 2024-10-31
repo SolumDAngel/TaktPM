@@ -1,0 +1,196 @@
+{
+    "queues": [
+        {
+            "id": "1",
+            "queueName": "kkkkkk",
+            "entryWorkPackages": [
+                {
+                    "id": "5",
+                    "workPackageName": "hgfgttttttt",
+                    "assetsEntry": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        }
+                    ],
+                    "assetsEntryQuantity": [
+                        4
+                    ],
+                    "assetsExit": [
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsExitQuantity": [
+                        4
+                    ],
+                    "persons": [
+                        {
+                            "id": "1",
+                            "userName": "aaaaaaa"
+                        },
+                        {
+                            "id": "2",
+                            "userName": "fgfdgfdg"
+                        }
+                    ]
+                }
+            ],
+            "exitWorkPackages": [
+                {
+                    "id": "3",
+                    "workPackageName": "fghfgh",
+                    "assetsEntry": [
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsEntryQuantity": [
+                        1
+                    ],
+                    "assetsExit": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        },
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsExitQuantity": [
+                        2,
+                        2
+                    ],
+                    "persons": []
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "queueName": "abddddddd",
+            "entryWorkPackages": [
+                {
+                    "id": "3",
+                    "workPackageName": "fghfgh",
+                    "assetsEntry": [
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsEntryQuantity": [
+                        1
+                    ],
+                    "assetsExit": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        },
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsExitQuantity": [
+                        2,
+                        2
+                    ],
+                    "persons": []
+                }
+            ],
+            "exitWorkPackages": [
+                {
+                    "id": "4",
+                    "workPackageName": "sadasfa",
+                    "assetsEntry": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        },
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsEntryQuantity": [
+                        3,
+                        1
+                    ],
+                    "assetsExit": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        },
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsExitQuantity": [
+                        2,
+                        2
+                    ],
+                    "persons": [
+                        {
+                            "id": "2",
+                            "userName": "fgfdgfdg"
+                        },
+                        {
+                            "id": "3",
+                            "userName": "ffffffffffff"
+                        }
+                    ]
+                },
+                {
+                    "id": "5",
+                    "workPackageName": "hgfgttttttt",
+                    "assetsEntry": [
+                        {
+                            "id": "1",
+                            "name": "test",
+                            "description": "123"
+                        }
+                    ],
+                    "assetsEntryQuantity": [
+                        4
+                    ],
+                    "assetsExit": [
+                        {
+                            "id": "2",
+                            "name": "123",
+                            "description": "test"
+                        }
+                    ],
+                    "assetsExitQuantity": [
+                        4
+                    ],
+                    "persons": [
+                        {
+                            "id": "1",
+                            "userName": "aaaaaaa"
+                        },
+                        {
+                            "id": "2",
+                            "userName": "fgfdgfdg"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
