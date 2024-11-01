@@ -1,32 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QueueWorkPackageContainer : MonoBehaviour
+public class WorkPackageContainer : MonoBehaviour
 {
     public string id;
     public string workPackageName;
-
     public TextMeshProUGUI workPackageNameText;
-
+    public WorkPackageMenu workPackageMenu;
+    public Toggle toggle;
     public bool selected;
 
-    public WorkPackageData workPackageData;
-    public QueueMenu queueMenu;
-    public GameObject checkMark;
-    public Toggle toggle;
+    private void Start()
+    {
+        toggle = GetComponent<Toggle>();
+    }
 
     public void UpdateContainer()
     {
+        if (toggle == null)
+            toggle = GetComponent<Toggle>();
+
         workPackageNameText.text = workPackageName;
-        checkMark.SetActive(selected);
         toggle.isOn = selected;
     }
-
     public void Select(bool select)
     {
+        workPackageMenu.ResetSelecteds();
         selected = select;
     }
 }

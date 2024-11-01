@@ -2,13 +2,13 @@
     "assets": [
         {
             "id": "1",
-            "name": "test",
-            "description": "123"
+            "name": "teste1",
+            "description": "dddsdsds"
         },
         {
             "id": "2",
-            "name": "123",
-            "description": "test"
+            "name": "teste2",
+            "description": "sdsdsdsdsd"
         }
     ]
 }

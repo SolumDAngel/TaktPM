@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
-using Unity.VisualScripting;
+
 public class WorkPackageMenu : MonoBehaviour
 {
     public GameObject workPackageContainer;
@@ -23,7 +22,6 @@ public class WorkPackageMenu : MonoBehaviour
     public TMP_InputField exitAssetInputField;
     public TMP_InputField personsInputField;
 
-
     public void Start()
     {
         foreach (WorkPackageData workPackageData in SaveManager.workPackageList.workPackages)
@@ -36,8 +34,10 @@ public class WorkPackageMenu : MonoBehaviour
             workPackage.workPackageMenu = this;
             workPackage.UpdateContainer();
         }
+    }
 
-
+    private void OnEnable()
+    {
         LoadContainers();
     }
 
@@ -47,20 +47,12 @@ public class WorkPackageMenu : MonoBehaviour
         Dictionary<string, WorkPackageContainerAssets> instantiatedExitAssets = new Dictionary<string, WorkPackageContainerAssets>();
         Dictionary<string, WorkPackageContainerPersons> instantiatedPersons = new Dictionary<string, WorkPackageContainerPersons>();
 
-
-        // Atualizando assetsEntry
         foreach (AssetsData assetEntry in SaveManager.appAssetsList.assets)
         {
-            bool isSelected = false;
-            if (SaveManager.workPackageList != null)
-                foreach (WorkPackageData workPackage in SaveManager.workPackageList.workPackages)
-                {
-                    isSelected = workPackage.assetsEntry.Any(a => a.id == assetEntry.id);
-                }
+            bool isSelected = SaveManager.workPackageList.workPackages.Any(workPackage => workPackage.assetsEntry.Any(a => a.id == assetEntry.id));
 
             if (instantiatedEntryAssets.ContainsKey(assetEntry.id))
             {
-                // Se já existir, atualiza o nome e o selected
                 WorkPackageContainerAssets asset = instantiatedEntryAssets[assetEntry.id];
                 asset.assetName = assetEntry.name;
                 asset.selected = isSelected;
@@ -69,7 +61,6 @@ public class WorkPackageMenu : MonoBehaviour
             }
             else
             {
-                // Instancia apenas se o ID não existir
                 GameObject obj = Instantiate(workPackageContainerAssets, workPackageContainerAssetsEntryTransform);
                 WorkPackageContainerAssets asset = obj.GetComponent<WorkPackageContainerAssets>();
 
@@ -79,23 +70,16 @@ public class WorkPackageMenu : MonoBehaviour
                 asset.assetData = assetEntry;
                 asset.UpdateContainer();
 
-                // Adiciona ao dicionário
                 instantiatedEntryAssets.Add(assetEntry.id, asset);
             }
         }
 
-        // Atualizando assetsExit
         foreach (AssetsData assetExit in SaveManager.appAssetsList.assets)
         {
-            bool isSelected = false;
-            if (SaveManager.workPackageList != null)
-                foreach (WorkPackageData workPackage in SaveManager.workPackageList.workPackages)
-                {
-                    isSelected = workPackage.assetsExit.Any(a => a.id == assetExit.id);
-                }
+            bool isSelected = SaveManager.workPackageList.workPackages.Any(workPackage => workPackage.assetsExit.Any(a => a.id == assetExit.id));
+
             if (instantiatedExitAssets.ContainsKey(assetExit.id))
             {
-                // Atualiza o nome e o selected
                 WorkPackageContainerAssets asset = instantiatedExitAssets[assetExit.id];
                 asset.assetName = assetExit.name;
                 asset.selected = isSelected;
@@ -113,23 +97,16 @@ public class WorkPackageMenu : MonoBehaviour
                 asset.assetData = assetExit;
                 asset.UpdateContainer();
 
-                // Adiciona ao dicionário
                 instantiatedExitAssets.Add(assetExit.id, asset);
             }
         }
 
-        // Atualizando persons
         foreach (UserData person in SaveManager.userList.users)
         {
-            bool isSelected = false;
-            if (SaveManager.workPackageList != null)
-                foreach (WorkPackageData workPackage in SaveManager.workPackageList.workPackages)
-                {
-                    isSelected = workPackage.persons.Exists(a => a.id == person.id);
-                }
+            bool isSelected = SaveManager.workPackageList.workPackages.Any(workPackage => workPackage.persons.Exists(a => a.id == person.id));
+
             if (instantiatedPersons.ContainsKey(person.id))
             {
-                // Atualiza o nome e o selected
                 WorkPackageContainerPersons personContainer = instantiatedPersons[person.id];
                 personContainer.personName = person.userName;
                 personContainer.selected = isSelected;
@@ -147,18 +124,14 @@ public class WorkPackageMenu : MonoBehaviour
                 personContainer.userData = person;
                 personContainer.UpdateContainer();
 
-                // Adiciona ao dicionário
                 instantiatedPersons.Add(person.id, personContainer);
             }
         }
         ResetSelecteds();
     }
 
-
     public void SearchWorkPackageContainer(string name)
     {
-        string searchText = name.ToLower();
-     
         foreach (WorkPackageContainer workPackage in workPackageContainerTransform.GetComponentsInChildren<WorkPackageContainer>(true))
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -167,10 +140,9 @@ public class WorkPackageMenu : MonoBehaviour
                 workPackage.gameObject.SetActive(workPackage.workPackageName.ToLower().Contains(name.ToLower()));
         }
     }
+
     public void SearchEntryAsset(string name)
     {
-        string searchText = name.ToLower();
-
         foreach (WorkPackageContainerAssets entryAsset in workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true))
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -179,10 +151,9 @@ public class WorkPackageMenu : MonoBehaviour
                 entryAsset.gameObject.SetActive(entryAsset.assetName.ToLower().Contains(name.ToLower()));
         }
     }
+
     public void SearchExitAsset(string name)
     {
-        string searchText = name.ToLower();
-
         foreach (WorkPackageContainerAssets exitAsset in workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true))
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -194,8 +165,6 @@ public class WorkPackageMenu : MonoBehaviour
 
     public void SearchPerson(string name)
     {
-        string searchText = name.ToLower();
-
         foreach (WorkPackageContainerPersons persons in workPackageContainerPersonsTransform.GetComponentsInChildren<WorkPackageContainerPersons>(true))
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -204,9 +173,6 @@ public class WorkPackageMenu : MonoBehaviour
                 persons.gameObject.SetActive(persons.personName.ToLower().Contains(name.ToLower()));
         }
     }
-
-
-
 
     public void CreateBtn()
     {
@@ -221,6 +187,7 @@ public class WorkPackageMenu : MonoBehaviour
         WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true);
         List<AssetsData> assetsEntryList = new List<AssetsData>();
         List<int> assetsEntryQuantity = new List<int>();
+
         foreach (WorkPackageContainerAssets asset in assetsEntry)
         {
             if (asset.selected)
@@ -233,6 +200,7 @@ public class WorkPackageMenu : MonoBehaviour
         WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true);
         List<AssetsData> assetsExitList = new List<AssetsData>();
         List<int> assetsExitQuantity = new List<int>();
+
         foreach (WorkPackageContainerAssets asset in assetsExit)
         {
             if (asset.selected)
@@ -244,13 +212,12 @@ public class WorkPackageMenu : MonoBehaviour
 
         WorkPackageContainerPersons[] persons = workPackageContainerPersonsTransform.GetComponentsInChildren<WorkPackageContainerPersons>(true);
         List<UserData> personsList = new List<UserData>();
+
         foreach (WorkPackageContainerPersons person in persons)
         {
             if (person.selected)
                 personsList.Add(person.userData);
         }
-
-
 
         WorkPackageData workPackageData = new WorkPackageData()
         {
@@ -262,6 +229,7 @@ public class WorkPackageMenu : MonoBehaviour
             assetsExitQuantity = assetsExitQuantity,
             persons = personsList
         };
+
         SaveToJson(workPackageData);
         worPackageCreateOverMenu.SetActive(false);
         ResetSelecteds();
@@ -269,7 +237,6 @@ public class WorkPackageMenu : MonoBehaviour
         exitAssetInputField.text = "";
         personsInputField.text = "";
     }
-
 
 
 
@@ -352,7 +319,6 @@ public class WorkPackageMenu : MonoBehaviour
         personsInputField.text = "";
     }
 
-
     public void EditContainerBtn()
     {
         selectedContainer = null;
@@ -376,21 +342,14 @@ public class WorkPackageMenu : MonoBehaviour
         editButton.SetActive(true);
         workPackageNameInputField.text = selectedContainer.workPackageName;
 
-         Debug.Log("Selected Container ID: " + selectedContainer.id);
-
-        //int editWorkPackageData = SaveManager.workPackageList.workPackages.FindIndex(workPackage => workPackage.id == selectedContainer.id);
-
         int editWorkPackageData = 0;
         for (int i = 0; i < SaveManager.workPackageList.workPackages.Count; i++)
         {
-            print("test: " + SaveManager.workPackageList.workPackages[i].id + " test: " + selectedContainer.id);
             if (SaveManager.workPackageList.workPackages[i].id == selectedContainer.id)
             {
                 editWorkPackageData = i;
             }
         }
-
-        Debug.Log("Found Index: " + editWorkPackageData);
 
         WorkPackageContainerAssets[] assetsEntry = workPackageContainerAssetsEntryTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true);
         if (SaveManager.workPackageList.workPackages.Exists(u => u.id == selectedContainer.id))
@@ -404,15 +363,11 @@ public class WorkPackageMenu : MonoBehaviour
                 foreach (AssetsData assetsData in SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntry)
                     if (assetEntryData.assetData.id == assetsData.id)
                     {
-                        print("test entry asset: " + assetEntryData.assetData.id);
                         assetEntryData.selected = true;
-                        assetEntryData.quantity =
-                            SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntryQuantity
-                            [SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntry.IndexOf(assetsData)];
+                        assetEntryData.quantity = SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntryQuantity[SaveManager.workPackageList.workPackages[editWorkPackageData].assetsEntry.IndexOf(assetsData)];
                         assetEntryData.quantityInputField.text = assetEntryData.quantity.ToString();
                         assetEntryData.UpdateContainer();
                     }
-
             }
         }
 
@@ -429,9 +384,7 @@ public class WorkPackageMenu : MonoBehaviour
                     if (assetExitData.assetData.id == assetsData.id)
                     {
                         assetExitData.selected = true;
-                        assetExitData.quantity =
-                            SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExitQuantity
-                            [SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExit.IndexOf(assetsData)];
+                        assetExitData.quantity = SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExitQuantity[SaveManager.workPackageList.workPackages[editWorkPackageData].assetsExit.IndexOf(assetsData)];
                         assetExitData.quantityInputField.text = assetExitData.quantity.ToString();
                         assetExitData.UpdateContainer();
                     }
@@ -444,7 +397,7 @@ public class WorkPackageMenu : MonoBehaviour
             foreach (WorkPackageContainerPersons personData in persons)
             {
                 personData.selected = false;
-                personData.UpdateContainer ();
+                personData.UpdateContainer();
                 foreach (UserData userData in SaveManager.workPackageList.workPackages[editWorkPackageData].persons)
                     if (personData.userData.id == userData.id)
                     {
@@ -455,8 +408,6 @@ public class WorkPackageMenu : MonoBehaviour
         }
 
         ResetSelecteds();
-        
- 
     }
 
     public void SaveToJson(WorkPackageData workPackageData)
@@ -482,17 +433,17 @@ public class WorkPackageMenu : MonoBehaviour
         {
             usedIDs.Add(0);
         }
-        // Encontra o maior ID usado
+
         int maxID = 0;
         if (usedIDs.Count > 0)
         {
             maxID = usedIDs.Max();
         }
 
-        // Gera um novo ID maior que o maior ID encontrado
         int newID = maxID + 1;
         return newID.ToString();
     }
+
     public void CreateContainerBtn()
     {
         worPackageCreateOverMenu.SetActive(true);
@@ -507,7 +458,7 @@ public class WorkPackageMenu : MonoBehaviour
             asset.quantityInputField.text = "0";
             asset.UpdateContainer();
         }
-        
+
         WorkPackageContainerAssets[] assetsExit = workPackageContainerAssetsExitTransform.GetComponentsInChildren<WorkPackageContainerAssets>(true);
         foreach (WorkPackageContainerAssets asset in assetsExit)
         {
@@ -547,14 +498,20 @@ public class WorkPackageMenu : MonoBehaviour
             if (workpackageData.selected)
             {
                 selectedContainer = workpackageData;
-                SaveManager.RemoveWorkPackageContainer(selectedContainer.id);
-                Destroy(selectedContainer.gameObject);
-                worPackageCreateOverMenu.SetActive(false);
-                ResetSelecteds();
-
                 break;
             }
         }
+        if (selectedContainer == null)
+        {
+            Debug.Log("No asset container selected");
+            return;
+        }
+
+        SaveManager.workPackageList.workPackages.RemoveAll(x => x.id == selectedContainer.id);
+        Destroy(selectedContainer.gameObject);
+        selectedContainer = null;
+
+        ResetSelecteds();
     }
 
     public void ResetSelecteds()

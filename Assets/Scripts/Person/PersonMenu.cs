@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -28,12 +27,10 @@ public class PersonMenu : MonoBehaviour
         }
     }
 
-
     public void SearchPerson(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            // Se o nome de busca está vazio ou apenas contém espaços, ativa todos os assets
             foreach (PersonContainer user in personContainerParent.GetComponentsInChildren<PersonContainer>(true))
             {
                 user.gameObject.SetActive(true);
@@ -41,19 +38,13 @@ public class PersonMenu : MonoBehaviour
             return;
         }
 
-        // Converte o nome para minúsculas para uma comparação case insensitive
         string searchText = name.ToLower();
-
-        // Obtém todos os componentes AssetContainer filhos do pai
         PersonContainer[] users = personContainerParent.GetComponentsInChildren<PersonContainer>(true);
 
-
-        // Ativa apenas os assets que correspondem à busca e desativa os demais
         foreach (PersonContainer user in users)
         {
             user.gameObject.SetActive(user.personName.ToLower().Contains(name.ToLower()));
         }
-
     }
 
     public void CreateBtn()
@@ -99,7 +90,6 @@ public class PersonMenu : MonoBehaviour
     {
         HashSet<int> usedIDs = new HashSet<int>();
 
-        // Adiciona todos os IDs já usados à lista de IDs usados
         foreach (UserData users in SaveManager.userList.users)
         {
             if (int.TryParse(users.id, out int id))
@@ -108,14 +98,12 @@ public class PersonMenu : MonoBehaviour
             }
         }
 
-        // Encontra o maior ID usado
         int maxID = 0;
         if (usedIDs.Count > 0)
         {
             maxID = usedIDs.Max();
         }
 
-        // Gera um novo ID maior que o maior ID encontrado
         int newID = maxID + 1;
         return newID.ToString();
     }
@@ -127,6 +115,7 @@ public class PersonMenu : MonoBehaviour
 
         ResetSelected();
     }
+
     public void CancelBtn()
     {
         personNameInputField.text = "";
@@ -134,6 +123,7 @@ public class PersonMenu : MonoBehaviour
 
         ResetSelected();
     }
+
     public void RemoveBtn()
     {
         selectedContainer = null;
@@ -156,7 +146,7 @@ public class PersonMenu : MonoBehaviour
         SaveManager.RemoveUser(user.id);
         Destroy(selectedContainer);
         users = new PersonContainer[0];
-      
+
         ResetSelected();
     }
 

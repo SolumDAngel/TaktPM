@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,7 +26,6 @@ public class QueueContainer : MonoBehaviour
     }
     public void Select(bool select)
     {
-      //  workPackageMenu.ResetSelecteds();
         selected = select;
     }
 }

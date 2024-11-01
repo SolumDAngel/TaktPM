@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,7 +23,6 @@ public class WorkPackageContainerAssets : MonoBehaviour
         checkMark.SetActive(selected);
         toggle.isOn = selected;
     }
-
     public void Select(bool select)
     {
         selected = select;
@@ -34,14 +31,11 @@ public class WorkPackageContainerAssets : MonoBehaviour
     {
         quantity = int.Parse(quantityInputField);
     }
-
-
     public void AddQuantity()
     {
         quantity++;
         quantityInputField.text = quantity.ToString();
     }
-
     public void RemoveQuantity()
     {
         quantity--;

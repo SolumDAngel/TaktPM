@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -8,14 +7,11 @@ public class QueueMenu : MonoBehaviour
 {
     public GameObject queueContainer;
     public GameObject queueWorkPackageContainer;
-
     public Transform queueContainerTransform;
     public Transform queueWorkPackageContainerEntryTransform;
     public Transform queueWorkPackageContainerExitTransform;
-
     public GameObject queueCreateOverMenu, createButton, editButton;
     public QueueContainer selectedContainer;
-
     public TMP_InputField queueNameInputField;
     public TMP_InputField entryWorkPackageInputField;
     public TMP_InputField exitWorkPackageInputField;
@@ -26,77 +22,61 @@ public class QueueMenu : MonoBehaviour
         {
             GameObject obj = Instantiate(queueContainer, queueContainerTransform);
             QueueContainer queue = obj.GetComponent<QueueContainer>();
-
             queue.id = queueData.id;
             queue.queueuName = queueData.queueName;
             queue.queueuMenu = this;
             queue.UpdateContainer();
         }
+    }
 
-
+    private void OnEnable()
+    {
         LoadWorkPackages();
     }
+
     public void SearchQueueContainer(string name)
     {
         string searchText = name.ToLower();
-
         foreach (QueueContainer queue in queueContainerTransform.GetComponentsInChildren<QueueContainer>(true))
         {
-            if (string.IsNullOrWhiteSpace(name))
-                queue.gameObject.SetActive(true);
-            else
-                queue.gameObject.SetActive(queue.queueuName.ToLower().Contains(name.ToLower()));
+            queue.gameObject.SetActive(string.IsNullOrWhiteSpace(name) || queue.queueuName.ToLower().Contains(searchText));
         }
     }
+
     public void SearchWorkPackageEntryContainer(string name)
     {
         string searchText = name.ToLower();
-
         foreach (QueueWorkPackageContainer workPackageEntry in queueWorkPackageContainerEntryTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true))
         {
-            if (string.IsNullOrWhiteSpace(name))
-                workPackageEntry.gameObject.SetActive(true);
-            else
-                workPackageEntry.gameObject.SetActive(workPackageEntry.workPackageName.ToLower().Contains(name.ToLower()));
+            workPackageEntry.gameObject.SetActive(string.IsNullOrWhiteSpace(name) || workPackageEntry.workPackageName.ToLower().Contains(searchText));
         }
     }
 
     public void SearchWorkPackageExitContainer(string name)
     {
         string searchText = name.ToLower();
-
         foreach (QueueWorkPackageContainer workPackageExit in queueWorkPackageContainerExitTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true))
         {
-            if (string.IsNullOrWhiteSpace(name))
-                workPackageExit.gameObject.SetActive(true);
-            else
-                workPackageExit.gameObject.SetActive(workPackageExit.workPackageName.ToLower().Contains(name.ToLower()));
+            workPackageExit.gameObject.SetActive(string.IsNullOrWhiteSpace(name) || workPackageExit.workPackageName.ToLower().Contains(searchText));
         }
     }
-
-
-
-
 
     public void LoadWorkPackages()
     {
         Dictionary<string, QueueWorkPackageContainer> instantiatedWorkPackages = new Dictionary<string, QueueWorkPackageContainer>();
 
-
         foreach (WorkPackageData workPackages in SaveManager.workPackageList.workPackages)
         {
             if (instantiatedWorkPackages.ContainsKey(workPackages.id))
-            {         
+            {
                 QueueWorkPackageContainer workPackage = instantiatedWorkPackages[workPackages.id];
                 workPackage.workPackageName = workPackages.workPackageName;
-                workPackage.selected = false; 
+                workPackage.selected = false;
             }
             else
             {
-                // Instancia apenas se o ID não existir
                 GameObject obj = Instantiate(queueWorkPackageContainer, queueWorkPackageContainerEntryTransform);
                 QueueWorkPackageContainer queueWorkPackage = obj.GetComponent<QueueWorkPackageContainer>();
-
                 queueWorkPackage.id = workPackages.id;
                 queueWorkPackage.workPackageName = workPackages.workPackageName;
                 queueWorkPackage.workPackageData = workPackages;
@@ -106,7 +86,6 @@ public class QueueMenu : MonoBehaviour
 
                 obj = Instantiate(queueWorkPackageContainer, queueWorkPackageContainerExitTransform);
                 queueWorkPackage = obj.GetComponent<QueueWorkPackageContainer>();
-
                 queueWorkPackage.id = workPackages.id;
                 queueWorkPackage.workPackageName = workPackages.workPackageName;
                 queueWorkPackage.workPackageData = workPackages;
@@ -119,9 +98,11 @@ public class QueueMenu : MonoBehaviour
 
     public void CreateQueueContainerBtn()
     {
+        queueNameInputField.text = "";
         queueCreateOverMenu.SetActive(true);
         createButton.SetActive(true);
         editButton.SetActive(false);
+
         QueueWorkPackageContainer[] workPackageContainerEntry = queueWorkPackageContainerEntryTransform.GetComponentsInChildren<QueueWorkPackageContainer>();
         foreach (QueueWorkPackageContainer workPackageEntry in workPackageContainerEntry)
         {
@@ -129,28 +110,25 @@ public class QueueMenu : MonoBehaviour
             workPackageEntry.UpdateContainer();
         }
 
-
         QueueWorkPackageContainer[] workPackageContainerExit = queueWorkPackageContainerExitTransform.GetComponentsInChildren<QueueWorkPackageContainer>();
         foreach (QueueWorkPackageContainer workPackageExit in workPackageContainerExit)
         {
             workPackageExit.selected = false;
             workPackageExit.UpdateContainer();
         }
-
     }
 
     public void CreateQueueBtn()
     {
         GameObject newContainer = Instantiate(queueContainer, queueContainerTransform);
         QueueContainer queue = newContainer.GetComponent<QueueContainer>();
-
-        queue.id = GetFreeID();
+        queue.id = GetFreeID().ToString();
         queue.queueuName = queueNameInputField.text;
         queue.queueuMenu = this;
         queue.UpdateContainer();
 
         QueueWorkPackageContainer[] workPackageEntry = queueWorkPackageContainerEntryTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true);
-        List<WorkPackageData> workPackageEntryList = new List<WorkPackageData>();       
+        List<WorkPackageData> workPackageEntryList = new List<WorkPackageData>();
         foreach (QueueWorkPackageContainer workPackage in workPackageEntry)
         {
             if (workPackage.selected)
@@ -169,14 +147,13 @@ public class QueueMenu : MonoBehaviour
             }
         }
 
-        QueuesData queueData = new QueuesData()
+        QueuesData queueData = new QueuesData
         {
             id = queue.id,
             queueName = queue.queueuName,
             entryWorkPackages = workPackageEntryList,
-            exitWorkPackages = workPackageExitList,
+            exitWorkPackages = workPackageExitList
         };
-
 
         SaveToJson(queueData);
         queueCreateOverMenu.SetActive(false);
@@ -189,7 +166,6 @@ public class QueueMenu : MonoBehaviour
     {
         QueueContainer queue = selectedContainer;
         QueuesData queueData = SaveManager.queueList.queues.Find(x => x.id == queue.id);
-
         queue.id = selectedContainer.id;
         queue.queueuName = queueNameInputField.text;
         queue.queueuMenu = this;
@@ -225,8 +201,6 @@ public class QueueMenu : MonoBehaviour
             }
         }
 
-
-
         queueData.id = queue.id;
         queueData.queueName = queue.queueuName;
         queueData.entryWorkPackages = workPackageEntryList;
@@ -234,10 +208,7 @@ public class QueueMenu : MonoBehaviour
 
         SaveToJson(queueData);
         queueCreateOverMenu.SetActive(false);
-
         ResetSelecteds();
-
-      //queueNameInputField.text = "";
         entryWorkPackageInputField.text = "";
         exitWorkPackageInputField.text = "";
     }
@@ -254,70 +225,74 @@ public class QueueMenu : MonoBehaviour
                 break;
             }
         }
+
         if (selectedContainer == null)
         {
             Debug.Log("No Queue container selected");
             return;
         }
+
         selectedContainer.queueuMenu = this;
         queueCreateOverMenu.SetActive(true);
         createButton.SetActive(false);
         editButton.SetActive(true);
         queueNameInputField.text = selectedContainer.queueuName;
-
-        Debug.Log("Selected Container ID: " + selectedContainer.id);
-
       
         int editQueueData = 0;
         for (int i = 0; i < SaveManager.queueList.queues.Count; i++)
         {
-            print("test: " + SaveManager.queueList.queues[i].id + " test: " + selectedContainer.id);
             if (SaveManager.queueList.queues[i].id == selectedContainer.id)
             {
                 editQueueData = i;
             }
         }
 
-        Debug.Log("Found Index: " + editQueueData);
-
         QueueWorkPackageContainer[] workPackageEntry = queueWorkPackageContainerEntryTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true);
         if (SaveManager.queueList.queues.Exists(u => u.id == selectedContainer.id))
         {
             foreach (QueueWorkPackageContainer workPackageEntryData in workPackageEntry)
             {
-                workPackageEntryData.selected = false;
+                workPackageEntryData.selected = SaveManager.queueList.queues[editQueueData].entryWorkPackages.Exists(x => x.id == workPackageEntryData.workPackageData.id);
                 workPackageEntryData.UpdateContainer();
-                foreach (WorkPackageData workPackageData in SaveManager.queueList.queues[editQueueData].entryWorkPackages)
-                    if (workPackageEntryData.id == workPackageData.id)
-                    {
-                        print("test entry worKPackage: " + workPackageEntryData.id);
-                        workPackageEntryData.selected = true;
-                        workPackageEntryData.UpdateContainer();
-                    }
-
             }
-        }
-        QueueWorkPackageContainer[] workPackageExit= queueWorkPackageContainerExitTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true);
-        if (SaveManager.queueList.queues.Exists(u => u.id == selectedContainer.id))
-        {
+
+            QueueWorkPackageContainer[] workPackageExit = queueWorkPackageContainerExitTransform.GetComponentsInChildren<QueueWorkPackageContainer>(true);
             foreach (QueueWorkPackageContainer workPackageExitData in workPackageExit)
             {
-                workPackageExitData.selected = false;
+                workPackageExitData.selected = SaveManager.queueList.queues[editQueueData].exitWorkPackages.Exists(x => x.id == workPackageExitData.workPackageData.id);
                 workPackageExitData.UpdateContainer();
-                foreach (WorkPackageData workPackageData in SaveManager.queueList.queues[editQueueData].exitWorkPackages)
-                    if (workPackageExitData.id == workPackageData.id)
-                    {
-                        print("test exit worKPackage: " + workPackageExitData.id);
-                        workPackageExitData.selected = true;
-                        workPackageExitData.UpdateContainer();
-                    }
+            }
+        }
+    }
 
+    private int GetFreeID()
+    {
+        int id = 1;
+        bool found = false;
+
+        while (!found)
+        {
+            if (SaveManager.queueList.queues.All(x => x.id != id.ToString()))
+            {
+                found = true;
+            }
+            else
+            {
+                id++;
             }
         }
 
-        ResetSelecteds();
+        return id;
+    }
 
-
+    private void ResetSelecteds()
+    {
+        QueueContainer[] queues = queueContainerTransform.GetComponentsInChildren<QueueContainer>(true);
+        foreach (QueueContainer queue in queues)
+        {
+            queue.selected = false;
+            queue.UpdateContainer();
+        }
     }
     public void CancelBtn()
     {
@@ -329,70 +304,17 @@ public class QueueMenu : MonoBehaviour
         entryWorkPackageInputField.text = "";
         exitWorkPackageInputField.text = "";
     }
-
-    public void RemoveContainerBtn()
+    private void SaveToJson(QueuesData queueData)
     {
-        selectedContainer = null;
-        QueueContainer[] queues = queueContainerTransform.GetComponentsInChildren<QueueContainer>(true);
-        foreach (QueueContainer queueData in queues)
+        if (SaveManager.queueList.queues.Exists(x => x.id == queueData.id))
         {
-            if (queueData.selected)
-            {
-                selectedContainer = queueData;
-                SaveManager.RemoveQueueContainer(selectedContainer.id);
-                Destroy(selectedContainer.gameObject);
-                queueCreateOverMenu.SetActive(false);
-                ResetSelecteds();
-
-                break;
-            }
-        }
-    }
-
-
-    public void ResetSelecteds()
-    {
-
-        QueueContainer[] queue = queueContainerTransform.GetComponentsInChildren<QueueContainer>(true);
-        foreach (QueueContainer queueData in queue)
-        {
-            queueData.selected = false;
-            queueData.toggle.isOn = false;
-        }
-    }
-
-    public void SaveToJson(QueuesData queueData)
-    {
-        SaveManager.SaveQueueData(queueData);
-    }
-
-    public string GetFreeID()
-    {
-        HashSet<int> usedIDs = new HashSet<int>();
-
-        if (SaveManager.workPackageList != null)
-        {
-            foreach (QueuesData workPackage in SaveManager.queueList.queues)
-            {
-                if (int.TryParse(workPackage.id, out int id))
-                {
-                    usedIDs.Add(id);
-                }
-            }
+            int index = SaveManager.queueList.queues.FindIndex(x => x.id == queueData.id);
+            SaveManager.queueList.queues[index] = queueData;
         }
         else
         {
-            usedIDs.Add(0);
+            SaveManager.queueList.queues.Add(queueData);
         }
-        // Encontra o maior ID usado
-        int maxID = 0;
-        if (usedIDs.Count > 0)
-        {
-            maxID = usedIDs.Max();
-        }
-
-        // Gera um novo ID maior que o maior ID encontrado
-        int newID = maxID + 1;
-        return newID.ToString();
+        SaveManager.SaveQueueData(queueData);
     }
 }
